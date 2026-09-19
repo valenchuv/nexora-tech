@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout Demo | NEXORA TECH</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 3rem;
+      margin: 3rem 0 5rem 0;
+    }
+    .checkout-box {
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--color-primary-dark);
+    }
+    .form-group input, .form-group select {
+      padding: 0.65rem 0.85rem;
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      outline: none;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--color-primary-blue);
+    }
+    .payment-option {
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .payment-option.selected {
+      border-color: var(--color-primary-blue);
+      background-color: rgba(49, 85, 216, 0.03);
+    }
+    .installments-panel {
+      background: #F8FAFC;
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      margin-top: 1rem;
+      border: 1px dashed var(--color-border);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-main">
+      <div class="header-wrapper">
+        <a href="index.html" class="logo-brand">
+          <div class="logo-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+          NEXORA<span>TECH</span>
+        </a>
+        <div style="font-size: 0.88rem; font-weight: 600; color: var(--color-success); display: flex; align-items: center; gap: 0.4rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Checkout Educativo Seguro (Sin pagos reales)
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <form id="checkoutForm" onsubmit="handleCheckoutSubmit(event)">
+      <div class="checkout-grid">
+        <div class="checkout-forms">
+          <div class="checkout-box">
+            <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 1.25rem; color: var(--color-primary-dark);">1. Datos del Comprador</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cNombre">Nombre *</label>
+                <input type="text" id="cNombre" required placeholder="Juan">
+              </div>
+              <div class="form-group">
+                <label for="cApellido">Apellido *</label>
+                <input type="text" id="cApellido" required placeholder="Pérez">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cEmail">Correo Electrónico *</label>
+                <input type="email" id="cEmail" required placeholder="juan@ejemplo.com">
+              </div>
+              <div class="form-group">
+                <label for="cTelefono">Teléfono *</label>
+                <input type="tel" id="cTelefono" required placeholder="11 3456 7890">
+              </div>
+            </div>
+          </div>
+
+          <div class="checkout-box">
+            <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 1.25rem; color: var(--color-primary-dark);">2. Domicilio de Entrega</h3>
+            <div class="form-group">
+              <label for="cDireccion">Calle y Número *</label>
+              <input type="text" id="cDireccion" required placeholder="Av. Principal 1234">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cCiudad">Ciudad / Localidad *</label>
+                <input type="text" id="cCiudad" required placeholder="San Miguel de Tucumán">
+              </div>
+              <div class="form-group">
+                <label for="cCP">Código Postal *</label>
+                <input type="text" id="cCP" required placeholder="4000">
+              </div>
+            </div>
+          </div>
+
+          <div class="checkout-box">
+            <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 1.25rem; color: var(--color-primary-dark);">3. Medio de Pago Simulado</h3>
+            
+            <label class="payment-option selected">
+              <input type="radio" name="paymentMethod" value="credit" checked onchange="updatePaymentMethod(this.value)">
+              <div>
+                <strong>Tarjeta de Crédito</strong>
+                <div style="font-size: 0.8rem; color: var(--color-text-muted);">Calculá hasta 12 cuotas con interés transparente</div>
+              </div>
+            </label>
+
+            <label class="payment-option">
+              <input type="radio" name="paymentMethod" value="debit" onchange="updatePaymentMethod(this.value)">
+              <div>
+                <strong>Tarjeta de Débito</strong>
+                <div style="font-size: 0.8rem; color: var(--color-text-muted);">Débito inmediato sin recargo</div>
+              </div>
+            </label>
+
+            <label class="payment-option">
+              <input type="radio" name="paymentMethod" value="transfer" onchange="updatePaymentMethod(this.value)">
+              <div>
+                <strong>Transferencia Bancaria</strong>
+                <div style="font-size: 0.8rem; color: var(--color-text-muted);">Recibirás el CBU demostrativo al confirmar</div>
+              </div>
+            </label>
+
+            <div id="creditFinancingPanel" class="installments-panel">
+              <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem;">Simulador de Financiación en Cuotas</h4>
+              <div class="form-group">
+                <label for="installmentSelect">Seleccioná cantidad de cuotas:</label>
+                <select id="installmentSelect" onchange="calculateInstallments()">
+                  <option value="1">1 cuota — 0% interés</option>
+                  <option value="3">3 cuotas — 10% interés</option>
+                  <option value="6">6 cuotas — 18% interés</option>
+                  <option value="9">9 cuotas — 27% interés</option>
+                  <option value="12">12 cuotas — 35% interés</option>
+                </select>
+              </div>
+              <div id="financingCalculations" style="font-size: 0.88rem; line-height: 1.6; margin-top: 0.5rem;"></div>
+            </div>
+          </div>
+        </div>
+
+        <aside>
+          <div class="checkout-box" id="checkoutSummaryBox"></div>
+        </aside>
+      </div>
+    </form>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>

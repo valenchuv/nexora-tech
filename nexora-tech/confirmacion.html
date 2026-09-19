@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡Compra Confirmada! | NEXORA TECH</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .confirmation-card {
+      max-width: 720px;
+      margin: 4rem auto;
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      padding: 3rem;
+      box-shadow: var(--shadow-lg);
+    }
+    .check-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-full);
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--color-success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-main">
+      <div class="header-wrapper" style="justify-content: center;">
+        <a href="index.html" class="logo-brand">
+          <div class="logo-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+          NEXORA<span>TECH</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="confirmation-card" id="confirmationBox"></div>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const orderNum = params.get("order");
+      const orders = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || "[]");
+      const order = orders.find(o => o.orderNumber === orderNum);
+
+      const box = document.getElementById("confirmationBox");
+      if (!order) {
+        box.innerHTML = `
+          <h2 style="text-align: center; color: var(--color-primary-dark);">Orden no encontrada</h2>
+          <p style="text-align: center; margin-top: 1rem;"><a href="productos.html" class="btn btn-primary">Ir al catálogo</a></p>
+        `;
+        return;
+      }
+
+      const fmt = (v) => new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(v);
+
+      box.innerHTML = `
+        <div class="check-icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h1 style="text-align: center; font-size: 2rem; font-weight: 800; color: var(--color-primary-dark); margin-bottom: 0.4rem;">¡Compra Confirmada!</h1>
+        <p style="text-align: center; color: var(--color-text-muted); margin-bottom: 2rem;">Gracias por tu compra de prueba. Tu orden ha sido registrada en el sistema DEMO.</p>
+
+        <div style="background: #F8FAFC; border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 2rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Número de Pedido:</span>
+            <strong style="color: var(--color-primary-blue); font-size: 1.1rem;">${order.orderNumber}</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Fecha:</span>
+            <strong>${order.date}</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Destinatario:</span>
+            <strong>${order.customer.firstName} ${order.customer.lastName}</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Dirección de Entrega:</span>
+            <strong>${order.customer.address}, ${order.customer.city} (CP ${order.customer.postalCode})</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Método de Pago:</span>
+            <strong style="text-transform: capitalize;">${order.payment.method} ${order.payment.method === 'credit' ? `(${order.payment.installments} cuotas)` : ''}</strong>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+          <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem;">Productos incluidos</h3>
+          ${order.items.map(i => {
+            const p = PRODUCTS_DATA.find(prod => prod.id === i.id);
+            return p ? `
+              <div style="display: flex; justify-content: space-between; padding: 0.4rem 0; font-size: 0.9rem; border-bottom: 1px solid var(--color-border);">
+                <span>${p.name} x${i.quantity}</span>
+                <strong>${fmt(p.price * 1200 * i.quantity)}</strong>
+              </div>
+            ` : "";
+          }).join("")}
+        </div>
+
+        <div style="border-top: 2px solid var(--color-border); padding-top: 1rem; margin-bottom: 2rem; display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: 800; color: var(--color-primary-dark);">
+          <span>Total Facturado:</span>
+          <span>${fmt(order.totals.total)}</span>
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+          <a href="productos.html" class="btn btn-primary" style="flex: 1;">Seguir Explorando</a>
+          <a href="cuenta.html" class="btn btn-secondary" style="flex: 1;">Ver en Mi Cuenta</a>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>
